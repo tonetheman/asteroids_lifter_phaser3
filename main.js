@@ -34,6 +34,11 @@ class GameScene extends Phaser.Scene {
 
 
     ship_left() {
+
+        // TODO: change to this.matter.add.image in create
+        // then you can do this next call
+        //this.ship.rotate( radians here );
+
         Body.rotate(this.ship, -Math.PI / DIR);
         Body.setAngularVelocity(this.ship,0);
     }
@@ -46,6 +51,12 @@ class GameScene extends Phaser.Scene {
         const forceMagnitude = 0.002 * this.ship.mass;
         let v = Vector.rotate({ x: 0, y: -forceMagnitude }, 
             this.ship.angle);
+        
+        // TODO: change to this.matter.add.image in create
+        // then you can do this next call
+        //this.ship.applyForce(v);
+        
+        
         Body.applyForce(this.ship,this.ship.position,v);
     }
 
