@@ -1,6 +1,12 @@
 
 let Body = Phaser.Physics.Matter.Matter.Body;
 let Vector = Phaser.Physics.Matter.Matter.Vector;
+let Composites = Phaser.Physics.Matter.Matter.Composites;
+let Composite = Phaser.Physics.Matter.Matter.Composite;
+let Bodies = Phaser.Physics.Matter.Matter.Bodies;
+let Constraint = Phaser.Physics.Matter.Matter.Constraint;
+let World = Phaser.Physics.Matter.Matter.World;
+
 const DIR = 64;
 const W = 800;
 const H = 600;
@@ -14,7 +20,7 @@ class GameScene extends Phaser.Scene {
     create() {
         this.matter.world.setBounds(0, 0, W, H, 32, true, true, false, true);
         this.tone_keyboard = this.input.keyboard.createCursorKeys();
-        //console.log(Phaser.Physics.Matter.Matter);
+        console.log(Phaser.Physics.Matter.Matter);
         let vertices = [{ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: -20 }];
         //let ship = Phaser.Physics.Matter.Matter.Bodies.fromVertices(0,0,
         //    vertices,
@@ -26,6 +32,21 @@ class GameScene extends Phaser.Scene {
                 resitution : 0.4
             });
         
+        let group = Body.nextGroup(true);
+        let ropeA = Composites.stack(100, 50, 8, 1, 10, 10, 
+            function(x, y) {
+            return Bodies.rectangle(x, y, 50, 20, 
+                { collisionFilter: { group: group } });
+        });
+        Composites.chain(ropeA, 0.5, 0, -0.5, 0, { stiffness: 0.8, length: 2, render: { type: 'line' } });
+        Composite.add(ropeA, Constraint.create({ 
+            bodyB: ropeA.bodies[0],
+            pointB: { x: -25, y: 0 },
+            pointA: { x: ropeA.bodies[0].position.x, y: ropeA.bodies[0].position.y },
+            stiffness: 0.5
+        }));
+        this.matter.world.add(ropeA);
+
         //this.input.on("pointerdown", this.ship_thrust, this);
         //console.log(this.ship);
     }
